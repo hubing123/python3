@@ -1,21 +1,24 @@
 from numpy import *
 import operator
 def createDataset():
-     group=array([1.0,1.1],[1.0,1.0],[0,0],[0,0.1])
+     group=array([[1.0,1.1],[1.0,1.0],[0,0],[0,0.1]])
      labels=['A','A','B','B']
      return group,labels
-def classify0(inx,dataSet,lables,k):
-     dataSetSiz=dataSet.shape[0]
-     diffMat=tile(inx,(dataSetSiz),1) -dataSet
-     sqDiffMat=diffMat**2
-     sqDistance=sqDiffMat.sum(axis=1)
-     distance=sqDistance**0.5
-     sortedDistIndicies=distance.argsort()
-     classCount={}
-     for i in range(k):
-          votelabel=lables[sorted(sortedDistIndicies[i])]
-          classCount[votelabel]=classCount.get((votelabel,0)+1)
-     sortedClassCount=sorted((classCount.iteritems),key=operator.itemgetter(1),reverse=True)
-     return sortedClassCount
-
+def classify0(inx,dataSet,labels,k):
+    dataSetSize = dataSet.shape[0]
+    diffMat = tile(inx, (dataSetSize,1)) - dataSet
+    sqDiffMat = diffMat**2
+    sqDistances = sqDiffMat.sum(axis=1)
+    distances = sqDistances**0.5
+    sortedDistIndicies = distances.argsort()
+    classCount={}
+    for i in range(k):
+         voteIlabel = labels[sortedDistIndicies[i]]
+         classCount[voteIlabel] = classCount.get(voteIlabel,0) + 1
+    sortedClassCount = sorted(classCount.items(), key=operator.itemgetter(1), reverse=True)
+    return sortedClassCount[0][0]
+# group=array([1.0,1.1],[1.0,1.0],[0,0],[0,0.1])
+group,lables=createDataset()
+t=classify0([0,0],group,lables,3)
+print(t)
 
